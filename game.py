@@ -53,11 +53,11 @@ def reset_counters():
 
 
 def is_correct_press(button_states):
-    global incorrect_pressed_buttons
-    if int(math.log2(button_states)) == target_button:
+    correct_state = 2 ** target_button
+    if button_states == correct_state:
         return True
     print(f"{hex(target_button)} != {
-        hex(int(math.log2(button_states)))} ({button_states})")
+        hex(button_states)} ({button_states})")
     return False
 
 
