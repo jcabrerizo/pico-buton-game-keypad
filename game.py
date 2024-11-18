@@ -1,42 +1,28 @@
 from machine import Pin
 from time import sleep
-import random
 import picokeypad
 import _thread
 import math
 
-
-class Colours:
-    red = (0xff, 0x00, 0x00)
-    aquamarine = (0x00, 0xb4, 0x77)
-    blue = (0x00, 0x00, 0xff)
-    white = (0x00, 0x00, 0x00)
-
+from leds import Colours, LedControl
 
 keypad = picokeypad.PicoKeypad()
 keypad.set_brightness(0.1)
-last_button_states = 0
+board_led = Pin("LED", Pin.OUT)
+led_control = LedControl(board_led, keypad)
 
 timeout_time = 5
-
-board_led = Pin("LED", Pin.OUT)
+last_button_states = 0
 button_time_counter = 0
 correct_pressed_buttons = -1
 incorrect_pressed_buttons = 0
 timeout_status = False
 reset_request = False
 
-
-def timeout_checker():
+def timer():
     global button_time_counter
     while True:
         if reset_request:
-            board_led.toggle()
-            sleep(0.2)
-            board_led.toggle()
-            sleep(0.2)
-            board_led.high()
-            sleep(0.2)
             reset_counters()
             print("New game")
         else:
@@ -46,8 +32,11 @@ def timeout_checker():
             if correct_pressed_buttons >= 0:
                 button_time_counter += 1
             if button_time_counter > timeout_time:
+                percentage = correct_pressed_buttons * 100 / \
+                    (correct_pressed_buttons + incorrect_pressed_buttons) if (
+                        correct_pressed_buttons + incorrect_pressed_buttons) > 0 else 0
                 print(f"{correct_pressed_buttons} | {
-                      incorrect_pressed_buttons} -> {correct_pressed_buttons * 100 / (correct_pressed_buttons + incorrect_pressed_buttons)}%")
+                      incorrect_pressed_buttons} -> {percentage}%")
                 reset_counters()
             sleep(1)
 
@@ -59,27 +48,8 @@ def reset_counters():
     button_time_counter = 0
     timeout_status = False
     reset_request = False
-    flash_all_leds()
-    target_button = switch_random_led(target_button, Colours.aquamarine)
-
-
-def flash_all_leds():
-    for i in range(0, keypad.get_num_pads()):
-        keypad.illuminate(i, 0x20, 0x00, 0x00)
-    keypad.update()
-    sleep(0.5)
-    for i in range(0, keypad.get_num_pads()):
-        keypad.illuminate(i, 0x00, 0x00, 0x00)
-    keypad.update()
-
-
-def switch_random_led(old_led=None, colour=Colours.blue):
-    if old_led is not None:
-        keypad.illuminate(old_led, 0, 0, 0)
-    new_led = random.randrange(0, 15)
-    keypad.illuminate(new_led, colour[0], colour[1], colour[2])
-    keypad.update()
-    return new_led
+    led_control.flash_all_leds()
+    target_button = led_control.switch_random_led(target_button, Colours.aquamarine)
 
 
 def is_correct_press(button_states):
@@ -95,7 +65,7 @@ target_button = None
 reset_counters()
 
 # Start timer thread
-timer_thread = _thread.start_new_thread(timeout_checker, ())
+timer_thread = _thread.start_new_thread(timer, ())
 
 while True:
     try:
@@ -110,7 +80,7 @@ while True:
                 elif is_correct_press(button_states):
                     correct_pressed_buttons += 1
                     # turn on new button
-                    target_button = switch_random_led(target_button)
+                    target_button = led_control.switch_random_led(target_button)
                 else:
                     incorrect_pressed_buttons += 1
 
