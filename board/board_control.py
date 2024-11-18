@@ -1,9 +1,9 @@
-from leds.colours import Colours
+from board.led_colours import Colours
 from time import sleep
 import random
 
 
-class LedControl:
+class BoardControl:
 
     def __init__(self, led, keypad):
         self._led = led
@@ -27,3 +27,9 @@ class LedControl:
         self._keypad.illuminate(new_led, colour[0], colour[1], colour[2])
         self._keypad.update()
         return new_led
+
+    def togle_led(self):
+        self._led.toggle()
+
+    def get_button_states(self):
+        return self._keypad.get_button_states()
