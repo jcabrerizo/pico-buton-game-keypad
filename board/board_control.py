@@ -1,18 +1,21 @@
 from board.led_colours import Colours
 from time import sleep
+import picokeypad  # type: ignore
 import random
 
 
 class BoardControl:
 
-    def __init__(self, led, keypad):
+    def __init__(self, led):
         self._led = led
-        self._keypad = keypad
+        self._keypad = picokeypad.PicoKeypad()
+        self._keypad.set_brightness(0.1)
 
     def flash_all_leds(self):
         for i in range(0, self._keypad.get_num_pads()):
             self._keypad.illuminate(i, 0x20, 0x00, 0x00)
         self._keypad.update()
+        sleep(1)
         for i in range(3):
             self._led.toggle()
             sleep(0.2)

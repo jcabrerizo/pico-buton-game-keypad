@@ -30,6 +30,19 @@ class GameControl:
                     self.reset_counters()
                 sleep(1)
 
+    def evalute_preeses_loop(self):
+        button_states = self.board_control.get_button_states()
+        if self.last_button_states != button_states:
+            self.last_button_states = button_states
+            if button_states > 0:  # 0 means all buttons are released
+                if button_states == 9:  # 1 and 4
+                    self.reset_request = True
+                    print("Reset requested")
+                elif self.is_correct_press(button_states):
+                    self.correct_press()
+                else:
+                    self.incorrect_press()
+
     def reset_counters(self):
         self.correct_pressed_buttons = -1  # first press is for starting
         self.incorrect_pressed_buttons = 0
@@ -48,24 +61,12 @@ class GameControl:
             hex(button_states)} ({button_states})")
         return False
 
-    def increase_correct(self):
+    def correct_press(self):
         self.correct_pressed_buttons +=1
-    
-    def increase_incorrect(self):
+        # turn on new button
+        self.target_button = self.board_control.switch_random_led(
+            self.target_button)
+            
+    def incorrect_press(self):
         self.incorrect_pressed_buttons +=1
         
-    def evalute_preeses_loop(self):
-        button_states = self.board_control.get_button_states()
-        if self.last_button_states != button_states:
-            self.last_button_states = button_states
-            if button_states > 0:  # 0 means all buttons are released
-                if button_states == 9:  # 1 and 4
-                    self.reset_request = True
-                    print("Reset requested")
-                elif self.is_correct_press(button_states):
-                    self.increase_correct()
-                    # turn on new button
-                    self.target_button = self.board_control.switch_random_led(
-                        self.target_button)
-                else:
-                    self.increase_incorrect()
