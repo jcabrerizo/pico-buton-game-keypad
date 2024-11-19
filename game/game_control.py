@@ -1,7 +1,7 @@
 from board.led_colours import Colours
 from time import sleep
 
-TIMEOUT_TIME = 5
+TIMEOUT_TIME = 15
 
 class GameControl:
     def __init__(self, board_control, display_control) -> None:
