@@ -10,6 +10,8 @@ class GameControl:
         self.last_button_states = 0
         self.target_button = None
         self.reset_counters()
+        self.block_keys = False
+        self.display_control.time_and_score(TIMEOUT_TIME, 0)
 
     def timer(self):
         while True:
@@ -26,6 +28,7 @@ class GameControl:
                     self.display_control.time_and_score(
                         TIMEOUT_TIME-self.button_time_counter, self.correct_pressed_buttons)
                 if self.button_time_counter >= TIMEOUT_TIME:
+                    self.block_keys = True
                     percentage = self.correct_pressed_buttons * 100 / \
                         (self.correct_pressed_buttons + self.incorrect_pressed_buttons) if (
                             self.correct_pressed_buttons + self.incorrect_pressed_buttons) > 0 else 0
@@ -35,11 +38,12 @@ class GameControl:
                     self.display_control.time_and_score(
                         TIMEOUT_TIME, self.correct_pressed_buttons)
                     self.reset_counters()
+                    self.block_keys = False
                 sleep(1)
 
     def evalute_preeses_loop(self):
         button_states = self.board_control.get_button_states()
-        if self.last_button_states != button_states:
+        if not self.block_keys and self.last_button_states != button_states:
             self.last_button_states = button_states
             if button_states > 0:  # 0 means all buttons are released
                 if button_states == 9:  # 1 and 4

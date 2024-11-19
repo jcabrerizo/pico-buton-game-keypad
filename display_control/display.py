@@ -4,10 +4,13 @@ from .tm1637 import TM1637
 
 class SegmentDisplay:
     def __init__(self, clk=Pin(26), dio=Pin(27)) -> None:
-        self._mydisplay = TM1637(clk=clk, dio=dio)
+        self._display = TM1637(clk=clk, dio=dio)
 
     def time_and_score(self, remaining_time, points):
-        self._mydisplay.numbers(num1=remaining_time, num2=points, colon=True)
+        self._display.numbers(num1=remaining_time, num2=points, colon=True)
+
+    def scroll(self, msg, delay=250):
+        self._display.scroll(msg, delay)
 
     def clear(self):
-        self._mydisplay.show("    ")
+        self._display.show("    ")
