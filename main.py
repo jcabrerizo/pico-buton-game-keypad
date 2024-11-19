@@ -1,3 +1,4 @@
+from display_control import SegmentDisplay
 from game.game_control import GameControl
 from machine import Pin
 from time import sleep
@@ -7,9 +8,10 @@ from board import BoardControl
 
 
 board_led = Pin("LED", Pin.OUT)
-board_control = BoardControl(board_led)
 
-game_controls = GameControl(board_control)
+board_control = BoardControl(board_led)
+display_control = SegmentDisplay()
+game_controls = GameControl(board_control, display_control)
 
 # Start timer thread
 timer_thread = _thread.start_new_thread(game_controls.timer, ())

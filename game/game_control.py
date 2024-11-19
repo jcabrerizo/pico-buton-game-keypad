@@ -4,8 +4,9 @@ from time import sleep
 TIMEOUT_TIME = 5
 
 class GameControl:
-    def __init__(self, board_control) -> None:
+    def __init__(self, board_control, display_control) -> None:
         self.board_control = board_control
+        self.display_control = display_control
         self.last_button_states = 0
         self.target_button = None
         self.reset_counters()
@@ -19,14 +20,20 @@ class GameControl:
                 self.board_control.togle_led()
                 if self.correct_pressed_buttons == 0 and self.button_time_counter == 0:
                     print("Starting game")
+                    self.display_control.time_and_score(TIMEOUT_TIME, 0)
                 if self.correct_pressed_buttons >= 0:
-                    self.button_time_counter += 1
-                if self.button_time_counter > TIMEOUT_TIME:
+                    self.button_time_counter += 1        
+                    self.display_control.time_and_score(
+                        TIMEOUT_TIME-self.button_time_counter, self.correct_pressed_buttons)
+                if self.button_time_counter >= TIMEOUT_TIME:
                     percentage = self.correct_pressed_buttons * 100 / \
                         (self.correct_pressed_buttons + self.incorrect_pressed_buttons) if (
                             self.correct_pressed_buttons + self.incorrect_pressed_buttons) > 0 else 0
                     print(f"{self.correct_pressed_buttons} | {
                         self.incorrect_pressed_buttons} -> {percentage}%")
+                    # show next round time and current round points
+                    self.display_control.time_and_score(
+                        TIMEOUT_TIME, self.correct_pressed_buttons)
                     self.reset_counters()
                 sleep(1)
 
@@ -64,6 +71,8 @@ class GameControl:
     def correct_press(self):
         self.correct_pressed_buttons +=1
         # turn on new button
+        self.display_control.time_and_score(
+            TIMEOUT_TIME-self.button_time_counter, self.correct_pressed_buttons)
         self.target_button = self.board_control.switch_random_led(
             self.target_button)
             

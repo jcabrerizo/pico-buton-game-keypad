@@ -22,15 +22,15 @@ Code examples are available in the official Pimoroni repository: <https://github
 ## Planned Enhancements
 
 1. **User Experience Improvements**  
-   - Additional lighting effects.  
-   - New game modes.  
+   - [ ] Additional lighting effects.  
+   - [ ] New game modes.  
 
 2. **Display Integration**  
-   - Add a display to show the score.  
+   - [x] Add a display to show the score: support a quad 7-segment LED display modules using the TM1637 LED driver using the [mcauser](https://github.com/mcauser/micropython-tm1637) library
 
 3. **Customizable Game Duration**  
-   - Allow players to adjust the game timer.  
+   - [ ] Allow players to adjust the game timer.  
 
 4. **Multiplayer Features**  
-   - Add Wi-Fi support for multiplayer modes.  
-   - Implement score storage and leaderboards.  
+   - [ ] Add Wi-Fi support for multiplayer modes.  
+   - [ ] Implement score storage and leaderboards.  
