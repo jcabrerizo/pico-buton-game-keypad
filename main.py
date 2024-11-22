@@ -1,4 +1,4 @@
-from display_control import SegmentDisplay
+from display import SegmentDisplay
 from game.game_control import GameControl
 from machine import Pin
 from time import sleep
@@ -18,7 +18,7 @@ timer_thread = _thread.start_new_thread(game_controls.timer, ())
 
 while True:
     try:
-        game_controls.evalute_preeses_loop()
+        game_controls.evaluate_presses_loop()
         sleep(0.1)
     except KeyboardInterrupt:
         """ break loop with control + c """

@@ -19,7 +19,7 @@ class GameControl:
                 self.reset_counters()
                 print("New game")
             else:
-                self.board_control.togle_led()
+                self.board_control.toggle_led()
                 if self.correct_pressed_buttons == 0 and self.button_time_counter == 0:
                     print("Starting game")
                     self.display_control.time_and_score(TIMEOUT_TIME, 0)
@@ -41,7 +41,7 @@ class GameControl:
                     self.block_keys = False
                 sleep(1)
 
-    def evalute_preeses_loop(self):
+    def evaluate_presses_loop(self):
         button_states = self.board_control.get_button_states()
         if not self.block_keys and self.last_button_states != button_states:
             self.last_button_states = button_states

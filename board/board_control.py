@@ -31,7 +31,7 @@ class BoardControl:
         self._keypad.update()
         return new_led
 
-    def togle_led(self):
+    def toggle_led(self):
         self._led.toggle()
 
     def get_button_states(self):
